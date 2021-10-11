@@ -4,8 +4,8 @@ from werkzeug.exceptions import NotFound
 
 app = Flask(__name__)
 
-PORT = 3200
-HOST = '192.168.0.15'
+#PORT = 3200
+#HOST = '192.168.0.15'
 
 with open('{}/databases/movies.json'.format("."), "r") as jsf:
    movies = json.load(jsf)["movies"]
@@ -32,7 +32,7 @@ def get_json():
 def get_movie_byid(movieid):
     for movie in movies:
         if str(movie["id"]) == str(movieid):
-            res = make_response(jsonify(movie),200)
+            res = make_response(jsonify(movie, discoverability(movie)),200) # both movie and discoverability are JSONified
             return res
     return make_response(jsonify({"error":"Movie ID not found"}),400)
     
@@ -43,7 +43,7 @@ def create_movie(movieid):
 
     for movie in movies:
         if str(movie["id"]) == str(movieid):
-            return make_response(jsonify({"error":"movie ID already exists"}),409)
+            return make_response(jsonify({"error":"movie ID already exists"},discoverability(movie)),409)
 
     movies.append(req)
     res = make_response(jsonify({"message":"movie added"}),200)
@@ -62,6 +62,7 @@ def del_movie(movieid):
 
 # get a movie info by its name
 # through a query
+# SYNTAX : URL/moviesbytitle?title=...
 @app.route("/moviesbytitle", methods=['GET'])
 def get_movie_bytitle():
     json = ""
@@ -74,7 +75,7 @@ def get_movie_bytitle():
     if not json:
         res = make_response(jsonify({"error":"movie title not found"}),400)
     else:
-        res = make_response(jsonify(json),200)
+        res = make_response(jsonify(json,discoverability(json)),200)
     return res
 
 # change a movie rating
@@ -82,13 +83,44 @@ def get_movie_bytitle():
 def update_movie_rating(movieid, rate):
     for movie in movies:
         if str(movie["id"]) == str(movieid):
-            movie["rating"] = int(rate)
-            res = make_response(jsonify(movie),200)
+            movie["rating"] = rate
+            res = make_response(jsonify(movie,discoverability(movie)),200)
             return res
 
     res = make_response(jsonify({"error":"movie ID not found"}),201)
     return res
 
+
+def discoverability(movie):
+
+    head = "/movies/"
+    id = movie["id"]
+    title = movie["title"]
+
+    return {
+        "possible_requests": [
+            # GET by movie id
+            {
+            "method" : "GET",
+            "uri" : head + id
+            },
+            # GET by movie title
+            {
+            "method" : "GET",
+            "uri" : "moviesbytitle?title=" + title
+            },
+            # DELETE by movie id
+            {
+            "method" : "DELETE",
+            "uri" : head + id
+            },
+            # PUT the movie rate
+            {"method" : "PUT",
+            "uri" : head + id + "/<rate>"}
+        ]
+    }
+
 if __name__ == "__main__":
-    print("Server running in port %s"%(PORT))
-    app.run(host=HOST, port=PORT)
+    #print("Server running in port %s"%(PORT))
+    #app.run(host=HOST, port=PORT)
+    app.run()
