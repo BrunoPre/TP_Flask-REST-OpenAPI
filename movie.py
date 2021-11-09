@@ -60,6 +60,41 @@ def del_movie(movieid):
     res = make_response(jsonify({"error":"movie ID not found"}),400)
     return res
 
+
+# delete movies whose rate is lower than a given rate
+# SYNTAX : URL/moviesbyrate?rate=...
+@app.route("/moviesbyrate", methods=["DELETE"])
+def del_movie_byLowerRate():
+    if request.args:
+        req = request.args
+        rate = float(req["rate"]) # all request's args are strings
+        for movie in movies:
+            if movie["rating"] <= rate:
+                movies.remove(movie)
+
+    return make_response(jsonify(movies),200)
+
+
+# get movies by a director's name
+# through a query
+# SYNTAX : URL/moviesbydirector?director=...
+@app.route("/moviesbydirector", methods=['GET'])
+def get_movie_moviesbydirector():
+    json = []
+    if request.args:
+        req = request.args
+        for movie in movies:
+            if str(movie["director"]) == str(req["director"]):
+                json.append(movie)
+
+    if not json:
+        res = make_response(jsonify({"error" : "movie title not found"}),400)
+    else:
+        res = make_response(jsonify(json,discoverability(json[0])),200)
+    return res
+
+
+
 # get a movie info by its name
 # through a query
 # SYNTAX : URL/moviesbytitle?title=...
@@ -91,6 +126,7 @@ def update_movie_rating(movieid, rate):
     return res
 
 
+# discoverability function to be RESTful
 def discoverability(movie):
 
     head = "/movies/"
@@ -107,7 +143,7 @@ def discoverability(movie):
             # GET by movie title
             {
             "method" : "GET",
-            "uri" : "moviesbytitle?title=" + title
+            "uri" : "/moviesbytitle?title=" + title
             },
             # DELETE by movie id
             {
@@ -115,8 +151,10 @@ def discoverability(movie):
             "uri" : head + id
             },
             # PUT the movie rate
-            {"method" : "PUT",
-            "uri" : head + id + "/<rate>"}
+            {
+            "method" : "PUT",
+            "uri" : head + id + "/<rate>"
+            }
         ]
     }
 
