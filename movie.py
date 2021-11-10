@@ -4,6 +4,8 @@ from werkzeug.exceptions import NotFound
 
 app = Flask(__name__)
 
+# define custom host and port to make the app public
+# if commented (and the last lines of the script), open provided URL or localhost
 #PORT = 3200
 #HOST = '192.168.0.15'
 
