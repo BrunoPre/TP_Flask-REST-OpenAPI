@@ -1,3 +1,4 @@
+import requests
 from flask import Flask, render_template, request, jsonify, make_response
 import json
 from werkzeug.exceptions import NotFound
@@ -6,6 +7,9 @@ app = Flask(__name__)
 
 #PORT = 3200
 #HOST = '192.168.0.15'
+
+PORT = 3201 # not to be confused with showtime's
+HOST = '127.0.0.1' # localhost
 
 with open('{}/databases/bookings.json'.format("."), "r") as jsf:
    booking = json.load(jsf)["bookings"]
@@ -47,6 +51,7 @@ def add_booking_byuser(userid):
 
     return make_response(jsonify({'error' : 'User ID not found'}),400)
     
+# discoverability function to be RESTful, given a booking
 def discoverability(book):
     
     head = "/bookings/"
@@ -59,6 +64,7 @@ def discoverability(book):
                 "method" : "GET",
                 "uri" : head + id
             },
+            # POST by user id
             {
                 "method" : "POST",
                 "uri" : head + id 
@@ -67,9 +73,9 @@ def discoverability(book):
     }  
 
 if __name__ == "__main__":
-    #print("Server running in port %s"%(PORT))
-    #app.run(host=HOST, port=PORT)
-    app.run()
+    print("Server running in port %s"%(PORT))
+    app.run(host=HOST, port=PORT)
+    #app.run()
     
   
    

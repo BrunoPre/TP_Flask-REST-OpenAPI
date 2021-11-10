@@ -4,8 +4,12 @@ from werkzeug.exceptions import NotFound
 
 app = Flask(__name__)
 
+# previous parameters
 #PORT = 3200
 #HOST = '192.168.0.15'
+
+PORT = 3200
+HOST = '127.0.0.1' # localhost
 
 with open('{}/databases/times.json'.format("."), "r") as jsf:
    times = json.load(jsf)["schedule"]
@@ -33,9 +37,9 @@ def get_schedule_by_date(date):
 
 
 if __name__ == "__main__":
-    #print("Server running in port %s"%(PORT))
-    #app.run(host=HOST, port=PORT)
-    app.run()
+    print("Server running in port %s"%(PORT))
+    app.run(host=HOST, port=PORT)
+    #app.run()
     
   
    
