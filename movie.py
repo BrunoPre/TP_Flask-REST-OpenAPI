@@ -128,7 +128,7 @@ def update_movie_rating(movieid, rate):
     return res
 
 
-# discoverability function to be RESTful
+# discoverability function to be RESTful, given a movie
 def discoverability(movie):
 
     head = "/movies/"

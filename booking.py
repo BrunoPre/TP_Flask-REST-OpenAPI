@@ -7,8 +7,8 @@ app = Flask(__name__)
 #PORT = 3200
 #HOST = '192.168.0.15'
 
-with open('{}/databases/booking.json'.format("."), "r") as jsf:
-   booking = json.load(jsf)["booking"]
+with open('{}/databases/bookings.json'.format("."), "r") as jsf:
+   booking = json.load(jsf)["bookings"]
 
 # root message
 @app.route("/", methods=['GET'])
@@ -18,44 +18,51 @@ def home():
 # get the complete json file
 @app.route("/bookings", methods=['GET'])
 def get_json():
-    #res = make_response(jsonify(INFO), 200)
     res = make_response(jsonify(booking), 200)
     return res
 
 # get bookings from a user ID
 @app.route("/bookings/<userid>", methods=['GET'])
-def get_booking_for_user(userid):
+def get_booking_byuser(userid):
     for book in booking:
-        if str(book["id"]) == str(userid):
-            res = make_response(jsonify(book, discoverability(book)),200) # both movie and discoverability are JSONified
+        if str(book["userid"]) == str(userid):
+            res = make_response(jsonify(book, discoverability(book)),200) # both booking and discoverability are JSONified
             return res
-    return make_response(jsonify({"error":"User ID not found"}),400)
+    return make_response(jsonify({"error": "User ID not found"}),400)
    
 # add a booking for a user
 @app.route("/bookings/<userid>", methods=["POST"])
 def add_booking_byuser(userid):
     req = request.get_json()
 
+    # if the booking is already present
     for book in booking:
-        if str(book["id"]) == str(userid):
-            return make_response(jsonify({"error":"booking already exists"},discoverability(book)),409)
+        if str(book["userid"]) == str(userid): # user exists
 
-    booking.append(req)
-    res = make_response(jsonify({"message":"booking added"}),200)
-    return res  
+            if book["dates"].count(req) == 1: # if booking already exists
+                return make_response(jsonify({"error":"booking already exists"},discoverability(book)),409)
+            
+            book["dates"].append(req) # else : add booking
+            return make_response(jsonify(book, discoverability(book)),200)
+
+    return make_response(jsonify({'error' : 'User ID not found'}),400)
     
 def discoverability(book):
     
     head = "/bookings/"
-    id = book["id"]
+    id = book["userid"]
 
     return {
         "possible_requests": [
             # GET by user id
             {
-            "method" : "GET",
-            "uri" : head + id
+                "method" : "GET",
+                "uri" : head + id
             },
+            {
+                "method" : "POST",
+                "uri" : head + id 
+            }
         ]
     }  
 
