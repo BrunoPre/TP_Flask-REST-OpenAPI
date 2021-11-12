@@ -1,8 +1,19 @@
+import requests
 from flask import Flask, render_template, request, jsonify, make_response
 import json
 from werkzeug.exceptions import NotFound
 
 app = Flask(__name__)
+
+PORT = 3200 # not to be confused with showtime's
+HOST = '127.0.0.1' # localhost
+
+PORT_BOOKING = '3201'
+HOST_BOOKING = HOST
+
+PORT_MOVIE = '3202'
+HOST_MOVIE = HOST
+
 with open('{}/databases/users.json'.format("."), "r") as jsf:
    users = json.load(jsf)["users"]
 
@@ -33,6 +44,23 @@ def create_user(userid):
     res = make_response(jsonify({"message":"user added"}),200)
     return res
 
+@app.route("/users/movies", methods=['GET'])
+def get_movies():
+    movies = requests.get('http://' + HOST_MOVIE + ':' + PORT_MOVIE + '/movies')
+    res = make_response(jsonify(movies), 200)
+    return res
+
+@app.route("/users/<userid>/bookings", methods=['GET'])
+def get_bookings(userid):
+    bookings = requests.get('http://' + HOST_BOOKING + ':' + PORT_BOOKING + '/bookings/<' + userid +'>')
+    res = make_response(jsonify(bookings), 200)
+    return res
+
+@app.route("/users/movie/<date>", methods=['GET'])
+def get_moviesByDate(date):
+    bookings = requests.get('http://' + HOST_BOOKING + ':' + PORT_BOOKING + '/bookings')
+    bookings = bookings.json()
+    
 
 # discoverability function to be RESTful, given a user
 def discoverability(user):

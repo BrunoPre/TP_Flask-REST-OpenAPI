@@ -1,0 +1,166 @@
+openapi: 3.0.0
+info:
+  title: User API
+  description: This is the API of the User service
+  contact:
+    email: pierre.lafon@imt-atlantique.net
+  license:
+    name: GPL v3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+  version: 1.0.0
+servers:
+# Added by API Auto Mocking Plugin
+- description: SwaggerHub API Auto Mocking
+  url: https://virtserver.swaggerhub.com/BlueeDD/User/1.0.0
+- url: https://virtserver.swaggerhub.com/UE-archi-distribuees/Booking/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: https://virtserver.swaggerhub.com/UE-archi-distribuees/Movie/1.0.0
+  description: SwaggerHub API Auto Mocking
+tags:
+- name: admins
+  description: Secured Admin-only calls
+- name: developers
+  description: Operations available to regular developers
+paths:
+  /:
+    get:
+      tags:
+      - developers
+      summary: home page of the service
+      description: |
+        Nothing to do
+      operationId: home
+      responses:
+        "200":
+          description: welcome message
+          content:
+            text/html:
+              schema:
+                type: string
+                example: <h1>Service de consultation de film</h1>
+  /users:
+    get:
+      tags:
+      - developers
+      summary: get the full JSON database about users
+      description: |
+        Nothing to do
+      operationId: get_json
+      responses:
+        "200":
+          description: full JSON
+          
+  /users/{userid}:
+    get:
+      tags:
+      - developers
+      summary: get the details about a user
+      description: |
+        By passing in the appropriate options, you can get bookings of a user
+      operationId: get_users_detail
+      responses:
+        "200":
+          description: Details of the user
+        "400":
+          description: bad input parameter
+      parameters:
+        - name: userid
+          in: path
+          description: ID of user to get
+          required: true
+          schema:
+            type: integer
+            additionalProperties: false
+            format: int64
+    post:
+      tags:
+      - admins
+      summary: add a user
+      description: Adds a user 
+      operationId: add_user
+      responses:
+        "200":
+          description: Booking created
+        "409":
+          description: an existing item already exists
+      parameters:
+        - name: userid
+          in: path
+          description: ID of user to post
+          required: true
+          schema:
+            type: integer
+            additionalProperties: false
+            format: int64
+
+  /users/movies:
+    get:
+      tags:
+      - developers
+      summary: get the list of movies
+      description: |
+        By passing in the appropriate options, you can get bookings of a user
+      operationId: get_movies
+      responses:
+        "200":
+          description: List of movies displayed
+        "400":
+          description: bad input parameter
+  
+  /users/{userid}/bookings:
+    get:
+      tags:
+      - developers
+      summary: get the list of bookings of the user
+      description: |
+        By passing in the appropriate options, you can get bookings of a user
+      operationId: get_showtimes
+      responses:
+        "200":
+          description: List of showtimes
+        "400":
+          description: bad input parameter 
+      parameters:
+        - name: userid
+          in: path
+          description: ID of user to post
+          required: true
+          schema:
+            type: integer
+            additionalProperties: false
+            format: int64
+          
+  /users/movies/{date}:
+    get:
+      tags:
+      - developers
+      summary: get the list of movies displayed on a date
+      description: |
+        By passing in the appropriate options, you can get bookings of a user
+      operationId: get_movies_bydate
+      responses:
+        "200":
+          description: List of showtimes
+        "400":
+          description: bad input parameter
+      parameters:
+        - name: date
+          in: path
+          description: date to get
+          required: true
+          schema:
+            type: string
+            additionalProperties: false
+          
+  /users/booking:
+    post:
+      tags:
+      - admins
+      summary: add a booking
+      description: Adds a booking 
+      operationId: add_booking
+      responses:
+        "200":
+          description: Booking created
+        "409":
+          description: an existing item already exists
