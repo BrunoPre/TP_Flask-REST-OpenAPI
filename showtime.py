@@ -8,7 +8,7 @@ app = Flask(__name__)
 #PORT = 3200
 #HOST = '192.168.0.15'
 
-PORT = 3200
+PORT = 3200 # not to be confused with booking's
 HOST = '127.0.0.1' # localhost
 
 with open('{}/databases/times.json'.format("."), "r") as jsf:
