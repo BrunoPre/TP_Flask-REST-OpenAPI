@@ -11,6 +11,10 @@ app = Flask(__name__)
 PORT = 3201 # not to be confused with showtime's
 HOST = '127.0.0.1' # localhost
 
+# Showtime service's port and host
+PORT_SHOWTIME = '3200'
+HOST_SHOWTIME = HOST
+
 with open('{}/databases/bookings.json'.format("."), "r") as jsf:
    booking = json.load(jsf)["bookings"]
 
@@ -37,19 +41,47 @@ def get_booking_byuser(userid):
 # add a booking for a user
 @app.route("/bookings/<userid>", methods=["POST"])
 def add_booking_byuser(userid):
-    req = request.get_json()
+    timetable = requests.get('http://' + HOST_SHOWTIME + ':' + PORT_SHOWTIME + '/showtimes')
+    timetable = timetable.json() # convert the Response object to JSON
 
-    # if the booking is already present
-    for book in booking:
-        if str(book["userid"]) == str(userid): # user exists
+    req = request.get_json() # 2 fields : date & movies (array)
+    
+    # see if date & scheduled movie exists
+    for time in timetable: # contains dicts with 2 fields : date & movies (array)
+        
+        # if right date was found
+        if time["date"] == req["date"]:
 
-            if book["dates"].count(req) == 1: # if booking already exists
-                return make_response(jsonify({"error":"booking already exists"},discoverability(book)),409)
-            
-            book["dates"].append(req) # else : add booking
-            return make_response(jsonify(book, discoverability(book)),200)
+            # check if all requested movies are scheduled
+            check_avail_movies = all(movie in time["movies"] for movie in req["movies"])
 
-    return make_response(jsonify({'error' : 'User ID not found'}),400)
+            if check_avail_movies:
+                for book in booking: # come across all the bookings
+
+                    if str(book["userid"]) == str(userid): # user exists
+                        for date in book["dates"]:
+
+                            if date["date"] == req["date"]: # if there's already a booking at the same date
+                                date["movies"].extend(req["movies"])
+                                return make_response(jsonify(book, discoverability(book)),200)
+                        # if there is no booking at the request date, then the full request is added
+                        book["dates"].append(req)
+                        return make_response(jsonify(book, discoverability(book)),200)
+
+                # user ID does not exist --> add the full request
+                new_user_booking = {
+                    "userid" : userid,
+                    "dates" : [req]
+                }
+                booking.append(new_user_booking)
+                return make_response(jsonify(new_user_booking, discoverability(new_user_booking)),200)
+
+            # if all requested movies are not scheduled
+            return make_response(jsonify({'error' : 'The requested movies are not available at this date'}),400)
+
+    # date was not found
+    return make_response(jsonify({'error' : 'No schedule found at this date'}),400)                
+
     
 # discoverability function to be RESTful, given a booking
 def discoverability(book):
