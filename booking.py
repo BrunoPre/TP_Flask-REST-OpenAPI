@@ -85,6 +85,7 @@ def add_booking_byuser(userid):
 @app.route("/bookings/showtimes/<date>", methods=["GET"])
 def get_MovieByDate(date):
     movies = requests.get('http://' + HOST_SHOWTIME + ':' + PORT_SHOWTIME + '/showmovies/' + date)
+    movies = movies.json()
     res = make_response(jsonify(movies), 200)
     return res
 

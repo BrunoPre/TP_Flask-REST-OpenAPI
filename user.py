@@ -36,7 +36,7 @@ def get_user_byid(userid):
             return res
     return make_response(jsonify({"error":"User ID not found"}),400)
 
-# TODO : fix error  # get all the movies
+# get all the movies
 @app.route("/users/movies", methods=['GET'])
 def get_movies():
     movies = requests.get('http://' + HOST_MOVIE + ':' + PORT_MOVIE + '/movies')
@@ -44,7 +44,7 @@ def get_movies():
     res = make_response(jsonify(movies), 200)
     return res
 
-# get a user's bookings
+# TODO : fix it # get a user's bookings
 @app.route("/users/<userid>/bookings", methods=['GET'])
 def get_bookings(userid):
     bookings = requests.get('http://' + HOST_BOOKING + ':' + PORT_BOOKING + '/bookings/' + userid)
