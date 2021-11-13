@@ -51,6 +51,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AllBookings'
+
+  /bookings/showtimes/{date}:
+    get:
+      tags:
+      - developers
+      summary: get the movies of a date
+      description: |
+        Nothing to do
+      operationId: get_json
+      responses:
+        "200":
+          description: full JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllBookings'
+      parameters:
+        - name: date
+          in: path
+          description: date.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            maximum: 1
+            minimum: 1
+            type: string
+            
   /bookings/{userid}:
     get:
       tags:
