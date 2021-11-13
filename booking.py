@@ -82,7 +82,12 @@ def add_booking_byuser(userid):
     # date was not found
     return make_response(jsonify({'error' : 'No schedule found at this date'}),400)                
 
-    
+@app.route("/bookings/showtimes/<date>", methods=["GET"])
+def get_MovieByDate(date):
+    movies = requests.get('http://' + HOST_SHOWTIME + ':' + PORT_SHOWTIME + '/showmovies/' + date)
+    res = make_response(jsonify(movies), 200)
+    return res
+
 # discoverability function to be RESTful, given a booking
 def discoverability(book):
     
