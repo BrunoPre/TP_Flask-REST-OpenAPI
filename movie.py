@@ -9,6 +9,15 @@ app = Flask(__name__)
 #PORT = 3200
 #HOST = '192.168.0.15'
 
+PORT = 3202
+HOST = '127.0.0.1' # localhost
+
+PORT_BOOKING = '3201'
+HOST_BOOKING = HOST
+
+PORT_SHOWTIME = '3200'
+HOST_SHOWTIME = HOST
+
 with open('{}/databases/movies.json'.format("."), "r") as jsf:
    movies = json.load(jsf)["movies"]
 
@@ -23,7 +32,7 @@ def template():
     return make_response(render_template('index.html', body_text='This is my HTML template for Movie service'),200)
 
 # get the complete json file
-@app.route("/movie", methods=['GET'])
+@app.route("/movies", methods=['GET'])
 def get_json():
     #res = make_response(jsonify(INFO), 200)
     res = make_response(jsonify(movies), 200)
@@ -162,5 +171,5 @@ def discoverability(movie):
 
 if __name__ == "__main__":
     #print("Server running in port %s"%(PORT))
-    #app.run(host=HOST, port=PORT)
-    app.run()
+    app.run(host=HOST, port=PORT)
+    #app.run()

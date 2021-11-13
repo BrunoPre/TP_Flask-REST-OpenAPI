@@ -27,7 +27,7 @@ def get_json():
 
 
 # get the schedule by date
-@app.route("/showtimes/<date>", methods=['GET'])
+@app.route("/showmovies/<date>", methods=['GET'])
 def get_schedule_by_date(date):
     for time in times:
         if str(time["date"]) == str(date):

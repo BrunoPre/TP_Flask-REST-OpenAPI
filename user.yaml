@@ -37,12 +37,12 @@ paths:
             text/html:
               schema:
                 type: string
-                example: <h1>Service de consultation de film</h1>
+                example: <h1>Welcome to the User service!</h1>
   /users:
     get:
       tags:
       - developers
-      summary: get the full JSON database about users
+      summary: get the full JSON database of the registered users
       description: |
         Nothing to do
       operationId: get_json
@@ -56,11 +56,11 @@ paths:
       - developers
       summary: get the details about a user
       description: |
-        By passing in the appropriate options, you can get bookings of a user
+        By passing in the appropriate options, you can get a user's bookings
       operationId: get_users_detail
       responses:
         "200":
-          description: Details of the user
+          description: User's details
         "400":
           description: bad input parameter
       parameters:
@@ -80,7 +80,7 @@ paths:
       operationId: add_user
       responses:
         "200":
-          description: Booking created
+          description: User created
         "409":
           description: an existing item already exists
       parameters:
@@ -99,7 +99,7 @@ paths:
       - developers
       summary: get the list of movies
       description: |
-        By passing in the appropriate options, you can get bookings of a user
+        Get all the movies
       operationId: get_movies
       responses:
         "200":
@@ -111,9 +111,9 @@ paths:
     get:
       tags:
       - developers
-      summary: get the list of bookings of the user
+      summary: get the list of the bookings of the user
       description: |
-        By passing in the appropriate options, you can get bookings of a user
+        By passing in the appropriate options, you can get a user's bookings
       operationId: get_showtimes
       responses:
         "200":
@@ -134,9 +134,9 @@ paths:
     get:
       tags:
       - developers
-      summary: get the list of movies displayed on a date
+      summary: get the list of movies scheduled on a given date
       description: |
-        By passing in the appropriate options, you can get bookings of a user
+        By passing in the appropriate options, you can get the movies scheduled on a given date
       operationId: get_movies_bydate
       responses:
         "200":

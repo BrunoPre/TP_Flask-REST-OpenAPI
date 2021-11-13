@@ -5,7 +5,7 @@ from werkzeug.exceptions import NotFound
 
 app = Flask(__name__)
 
-PORT = 3200 # not to be confused with showtime's
+PORT = 3204 # not to be confused with others' port
 HOST = '127.0.0.1' # localhost
 
 PORT_BOOKING = '3201'
@@ -22,20 +22,48 @@ with open('{}/databases/users.json'.format("."), "r") as jsf:
 def home():
     return make_response("<h1 style='color:blue'>Welcome to the User service!</h1>",200)
 
+# TODO : GET /users --> get the full JSON database
+@app.route("/users", methods=['GET'])
+def get_users():
+    return make_response(jsonify(users),200)
+
 # get a user info by its ID
 @app.route("/users/<userid>", methods=['GET'])
 def get_user_byid(userid):
     for user in users:
-        if str(user["userid"]) == str(userid):
+        if str(user["id"]) == str(userid):
             res = make_response(jsonify(user, discoverability(user)),200) # both user and discoverability are JSONified
             return res
     return make_response(jsonify({"error":"User ID not found"}),400)
-    
+
+# TODO : fix error  # get all the movies
+@app.route("/users/movies", methods=['GET'])
+def get_movies():
+    movies = requests.get('http://' + HOST_MOVIE + ':' + PORT_MOVIE + '/movies')
+    movies = movies.json()
+    res = make_response(jsonify(movies), 200)
+    return res
+
+# get a user's bookings
+@app.route("/users/<userid>/bookings", methods=['GET'])
+def get_bookings(userid):
+    bookings = requests.get('http://' + HOST_BOOKING + ':' + PORT_BOOKING + '/bookings/' + userid)
+    bookings = bookings.json()
+    res = make_response(jsonify(bookings), 200)
+    return res
+
+# get the movies scheduled on a given date
+@app.route("/users/movies/<date>", methods=['GET'])
+def get_moviesByDate(date):
+    bookings = requests.get('http://' + HOST_BOOKING + ':' + PORT_BOOKING + '/bookings')
+    bookings = bookings.json()
+
 # add a new user
 @app.route("/users/<userid>", methods=["POST"])
 def create_user(userid):
     req = request.get_json()
 
+    # check if the user already exists in the database
     for user in users:
         if str(user["userid"]) == str(userid):
             return make_response(jsonify({"error":"user ID already exists"},discoverability(user)),409)
@@ -44,22 +72,8 @@ def create_user(userid):
     res = make_response(jsonify({"message":"user added"}),200)
     return res
 
-@app.route("/users/movies", methods=['GET'])
-def get_movies():
-    movies = requests.get('http://' + HOST_MOVIE + ':' + PORT_MOVIE + '/movies')
-    res = make_response(jsonify(movies), 200)
-    return res
+# TODO : POST /users/booking --> add a booking
 
-@app.route("/users/<userid>/bookings", methods=['GET'])
-def get_bookings(userid):
-    bookings = requests.get('http://' + HOST_BOOKING + ':' + PORT_BOOKING + '/bookings/<' + userid +'>')
-    res = make_response(jsonify(bookings), 200)
-    return res
-
-@app.route("/users/movie/<date>", methods=['GET'])
-def get_moviesByDate(date):
-    bookings = requests.get('http://' + HOST_BOOKING + ':' + PORT_BOOKING + '/bookings')
-    bookings = bookings.json()
     
 
 # discoverability function to be RESTful, given a user
@@ -67,7 +81,6 @@ def discoverability(user):
 
     head = "/users/"
     id = user["id"]
-    title = user["title"]
 
     return {
         "possible_requests": [
@@ -76,25 +89,20 @@ def discoverability(user):
             "method" : "GET",
             "uri" : head + id
             },
-            # GET by user title
+            # GET a user's bookings
             {
             "method" : "GET",
-            "uri" : "/usersbytitle?title=" + title
+            "uri" : head + id + '/bookings'
             },
-            # DELETE by user id
+            # POST a booking
             {
-            "method" : "DELETE",
-            "uri" : head + id
-            },
-            # PUT the user rate
-            {
-            "method" : "PUT",
-            "uri" : head + id + "/<rate>"
+            "method" : "POST",
+            "uri" : head + 'booking'
             }
         ]
     }
 
 if __name__ == "__main__":
-    #print("Server running in port %s"%(PORT))
-    #app.run(host=HOST, port=PORT)
-    app.run()
+    print("Server running in port %s"%(PORT))
+    app.run(host=HOST, port=PORT)
+    #app.run()
