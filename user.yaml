@@ -129,7 +129,18 @@ paths:
             type: integer
             additionalProperties: false
             format: int64
-          
+    post:
+      tags:
+      - admins
+      summary: add a booking to a user
+      description: Adds a booking 
+      operationId: add_booking
+      responses:
+        "200":
+          description: Booking created
+        "409":
+          description: an existing item already exists  
+
   /users/movies/{date}:
     get:
       tags:
@@ -152,15 +163,3 @@ paths:
             type: string
             additionalProperties: false
           
-  /users/booking:
-    post:
-      tags:
-      - admins
-      summary: add a booking
-      description: Adds a booking 
-      operationId: add_booking
-      responses:
-        "200":
-          description: Booking created
-        "409":
-          description: an existing item already exists

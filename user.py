@@ -44,7 +44,7 @@ def get_movies():
     res = make_response(jsonify(movies), 200)
     return res
 
-# TODO : fix it # get a user's bookings
+# get a user's bookings
 @app.route("/users/<userid>/bookings", methods=['GET'])
 def get_bookings(userid):
     bookings = requests.get('http://' + HOST_BOOKING + ':' + PORT_BOOKING + '/bookings/' + userid)
@@ -55,8 +55,11 @@ def get_bookings(userid):
 # get the movies scheduled on a given date
 @app.route("/users/movies/<date>", methods=['GET'])
 def get_moviesByDate(date):
-    bookings = requests.get('http://' + HOST_BOOKING + ':' + PORT_BOOKING + '/bookings')
-    bookings = bookings.json()
+    movies = requests.get('http://' + HOST_BOOKING + ':' + PORT_BOOKING + '/bookings/showtimes/' + date)
+    movies = movies.json()
+    res = make_response(jsonify(movies), 200)
+    return res
+
 
 # add a new user
 @app.route("/users/<userid>", methods=["POST"])
@@ -72,7 +75,13 @@ def create_user(userid):
     res = make_response(jsonify({"message":"user added"}),200)
     return res
 
-# TODO : POST /users/booking --> add a booking
+#POST  add a booking to a user
+@app.route("/users/<userid>/bookings", methods=['POST'])
+def get_bookings(userid):
+    bookings = requests.post('http://' + HOST_BOOKING + ':' + PORT_BOOKING + '/bookings/' + userid)
+    bookings = bookings.json()
+    res = make_response(jsonify(bookings), 200)
+    return res
 
     
 
