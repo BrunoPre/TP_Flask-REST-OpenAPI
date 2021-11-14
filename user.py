@@ -22,7 +22,7 @@ with open('{}/databases/users.json'.format("."), "r") as jsf:
 def home():
     return make_response("<h1 style='color:blue'>Welcome to the User service!</h1>",200)
 
-# TODO : GET /users --> get the full JSON database
+# get the full JSON database
 @app.route("/users", methods=['GET'])
 def get_users():
     return make_response(jsonify(users),200)
@@ -40,25 +40,22 @@ def get_user_byid(userid):
 @app.route("/users/movies", methods=['GET'])
 def get_movies():
     movies = requests.get('http://' + HOST_MOVIE + ':' + PORT_MOVIE + '/movies')
-    movies = movies.json()
-    res = make_response(jsonify(movies), 200)
+    res = movies.json() # jsonify the response and return it
     return res
 
 # get a user's bookings
 @app.route("/users/<userid>/bookings", methods=['GET'])
 def get_bookings(userid):
     bookings = requests.get('http://' + HOST_BOOKING + ':' + PORT_BOOKING + '/bookings/' + userid)
-    bookings = bookings.json()
-    res = make_response(jsonify(bookings), 200)
-    return res
+    res = bookings.json()
+    return make_response(jsonify(res), bookings.status_code)
 
 # get the movies scheduled on a given date
 @app.route("/users/movies/<date>", methods=['GET'])
 def get_moviesByDate(date):
     movies = requests.get('http://' + HOST_BOOKING + ':' + PORT_BOOKING + '/bookings/showtimes/' + date)
-    movies = movies.json()
-    res = make_response(jsonify(movies), 200)
-    return res
+    res = movies.json()
+    return make_response(jsonify(res), movies.status_code)
 
 
 # add a new user
@@ -66,24 +63,28 @@ def get_moviesByDate(date):
 def create_user(userid):
     req = request.get_json()
 
+    # check the integrity of the request
+    if userid != req["id"]:
+        return make_response(jsonify({'error' : 'URL argument and body does not match proprely'}), 409)
+
     # check if the user already exists in the database
     for user in users:
-        if str(user["userid"]) == str(userid):
+        if str(user["id"]) == str(userid):
             return make_response(jsonify({"error":"user ID already exists"},discoverability(user)),409)
 
     users.append(req)
-    res = make_response(jsonify({"message":"user added"}),200)
-    return res
+    return make_response(jsonify({"message":"user added"},200))
 
-#POST  add a booking to a user
+# add a booking to a user
 @app.route("/users/<userid>/bookings", methods=['POST'])
-def get_bookings(userid):
-    bookings = requests.post('http://' + HOST_BOOKING + ':' + PORT_BOOKING + '/bookings/' + userid)
-    bookings = bookings.json()
-    res = make_response(jsonify(bookings), 200)
-    return res
+def add_booking(userid):
+    req = request.get_json()
+    url = 'http://' + HOST_BOOKING + ':' + PORT_BOOKING + '/bookings/' + userid
 
-    
+    bookings = requests.post(url, json=req)
+    bookings_response = bookings.json()
+    return make_response(jsonify(bookings_response), bookings.status_code)
+
 
 # discoverability function to be RESTful, given a user
 def discoverability(user):
@@ -106,7 +107,12 @@ def discoverability(user):
             # POST a booking
             {
             "method" : "POST",
-            "uri" : head + 'booking'
+            "uri" : head + id + '/bookings'
+            },
+            # GET the movies scheduled on a given date
+            {
+            "method" : "GET",
+            "uri" : head + 'movies/<date>'
             }
         ]
     }
