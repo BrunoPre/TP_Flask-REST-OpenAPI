@@ -57,7 +57,7 @@ def create_movie(movieid):
             return make_response(jsonify({"error":"movie ID already exists"},discoverability(movie)),409)
 
     movies.append(req)
-    res = make_response(jsonify({"message":"movie added"}),200)
+    res = make_response(jsonify({"message":"movie added"}, movies),200)
     return res
 
 # delete a movie
@@ -79,6 +79,7 @@ def del_movie_byLowerRate():
     if request.args:
         req = request.args
         rate = float(req["rate"]) # all request's args are strings
+
         for movie in movies:
             if movie["rating"] <= rate:
                 movies.remove(movie)
