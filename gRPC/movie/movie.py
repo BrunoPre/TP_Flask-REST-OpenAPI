@@ -5,8 +5,6 @@ from concurrent import futures
 from werkzeug.wrappers import response
 import movie_pb2
 import movie_pb2_grpc
-import showtime_pb2
-import showtime_pb2_grpc
 
 class MovieServicer(movie_pb2_grpc.MovieServicer):
 
