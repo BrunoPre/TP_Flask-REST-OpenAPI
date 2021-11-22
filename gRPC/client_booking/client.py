@@ -6,10 +6,10 @@ def run():
     with grpc.insecure_channel('localhost:3003') as channel:
         stub = booking_pb2_grpc.BookingStub(channel)
 
-        print("-------------- GetScheduleByDate --------------")
+        print("-------------- GetListBookings --------------")
         get_list_bookings(stub)
 
-        print("-------------- GetListBookings --------------")
+        print("-------------- GetScheduleByDate --------------")
         date = booking_pb2.BookingDate(date = '20151201')
         get_movies_by_date(stub, date)
 
@@ -17,10 +17,13 @@ def run():
         user = booking_pb2.UserID(id = 'garret_heaton')
         get_users_book(stub, user)
 
+        # TODO : fix attributes issue
+        '''
         print("-------------- AddBook --------------")
         date = booking_pb2.BookingDateAndMovieID(date="20151202",scheduled_movies=["7daf7208-be4d-4944-a3ae-c1c2f516f3e6","267eedb8-0f5d-42d5-8f43-72426b9fb3e6"] )
         book = booking_pb2.Book(userid= "chris_rivers", date=date)
         add_book(stub,book)
+        '''
 
 def get_list_bookings(stub):
     bookings = stub.GetListBookings(booking_pb2.BookingEmpty())

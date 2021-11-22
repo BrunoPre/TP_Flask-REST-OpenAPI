@@ -21,7 +21,7 @@ HOST_BOOKING = HOST
 PORT_MOVIE = '3001'
 HOST_MOVIE = HOST
 
-with open('{}/databases/users.json'.format("."), "r") as jsf:
+with open('{}/../databases/users.json'.format("."), "r") as jsf:
    users = json.load(jsf)["users"]
 
 # root message
@@ -58,14 +58,20 @@ def get_movies():
 # get a user's bookings
 @app.route("/users/<userid>/bookings", methods=['GET'])
 def get_bookings(userid):
-    json = []
+    list_json = []
+    print(f'userid = {userid}')
     user = booking_pb2.UserID(id = userid)
     with grpc.insecure_channel('localhost:3003') as channel:
         stub = booking_pb2_grpc.BookingStub(channel)
         bookings = stub.GetUsersBook(user) # Book array
+
         for book in bookings:
-            json.append({'userid' : book.userid, 'dates' : [{'date' : book.date.date, 'movies' : book.date.scheduled_movies}] })
-    return make_response(jsonify(json), 200)
+            print(f'UserID : {book.userid}, Date : {book.date.date}, Booked movies : {book.date.scheduled_movies}')
+
+        for book in bookings:
+            list_json.append({'userid' : book.userid, 'dates' : {'date' : book.date.date, 'movies' : book.date.scheduled_movies}})
+    list_json = json.dumps(list_json)
+    return make_response(jsonify(list_json), 200)
 
 
 # get the movies scheduled on a given date

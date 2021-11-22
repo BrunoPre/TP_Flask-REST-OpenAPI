@@ -7,10 +7,6 @@ service Booking {
     rpc AddBook(Book) returns (Book) {}
 }
 
-message MovieID {
-    string id = 1;
-}
-
 message BookingEmpty {
     
 }

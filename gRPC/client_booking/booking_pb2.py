@@ -19,42 +19,10 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\rbooking.proto\"\x15\n\x07MovieID\x12\n\n\x02id\x18\x01 \x01(\t\"\x0e\n\x0c\x42ookingEmpty\"\x1b\n\x0b\x42ookingDate\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\"?\n\x15\x42ookingDateAndMovieID\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\x12\x18\n\x10scheduled_movies\x18\x02 \x03(\t\"\x14\n\x06UserID\x12\n\n\x02id\x18\x01 \x01(\t\"<\n\x04\x42ook\x12\x0e\n\x06userid\x18\x01 \x01(\t\x12$\n\x04\x64\x61te\x18\x02 \x01(\x0b\x32\x16.BookingDateAndMovieID2\xb0\x01\n\x07\x42ooking\x12+\n\x0fGetListBookings\x12\r.BookingEmpty\x1a\x05.Book\"\x00\x30\x01\x12\x39\n\x0fGetMoviesByDate\x12\x0c.BookingDate\x1a\x16.BookingDateAndMovieID\"\x00\x12\"\n\x0cGetUsersBook\x12\x07.UserID\x1a\x05.Book\"\x00\x30\x01\x12\x19\n\x07\x41\x64\x64\x42ook\x12\x05.Book\x1a\x05.Book\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\rbooking.proto\"\x0e\n\x0c\x42ookingEmpty\"\x1b\n\x0b\x42ookingDate\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\"?\n\x15\x42ookingDateAndMovieID\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\x12\x18\n\x10scheduled_movies\x18\x02 \x03(\t\"\x14\n\x06UserID\x12\n\n\x02id\x18\x01 \x01(\t\"<\n\x04\x42ook\x12\x0e\n\x06userid\x18\x01 \x01(\t\x12$\n\x04\x64\x61te\x18\x02 \x01(\x0b\x32\x16.BookingDateAndMovieID2\xb0\x01\n\x07\x42ooking\x12+\n\x0fGetListBookings\x12\r.BookingEmpty\x1a\x05.Book\"\x00\x30\x01\x12\x39\n\x0fGetMoviesByDate\x12\x0c.BookingDate\x1a\x16.BookingDateAndMovieID\"\x00\x12\"\n\x0cGetUsersBook\x12\x07.UserID\x1a\x05.Book\"\x00\x30\x01\x12\x19\n\x07\x41\x64\x64\x42ook\x12\x05.Book\x1a\x05.Book\"\x00\x62\x06proto3'
 )
 
 
-
-
-_MOVIEID = _descriptor.Descriptor(
-  name='MovieID',
-  full_name='MovieID',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='id', full_name='MovieID.id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=17,
-  serialized_end=38,
-)
 
 
 _BOOKINGEMPTY = _descriptor.Descriptor(
@@ -77,8 +45,8 @@ _BOOKINGEMPTY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=40,
-  serialized_end=54,
+  serialized_start=17,
+  serialized_end=31,
 )
 
 
@@ -109,8 +77,8 @@ _BOOKINGDATE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=56,
-  serialized_end=83,
+  serialized_start=33,
+  serialized_end=60,
 )
 
 
@@ -148,8 +116,8 @@ _BOOKINGDATEANDMOVIEID = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=85,
-  serialized_end=148,
+  serialized_start=62,
+  serialized_end=125,
 )
 
 
@@ -180,8 +148,8 @@ _USERID = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=150,
-  serialized_end=170,
+  serialized_start=127,
+  serialized_end=147,
 )
 
 
@@ -219,25 +187,17 @@ _BOOK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=172,
-  serialized_end=232,
+  serialized_start=149,
+  serialized_end=209,
 )
 
 _BOOK.fields_by_name['date'].message_type = _BOOKINGDATEANDMOVIEID
-DESCRIPTOR.message_types_by_name['MovieID'] = _MOVIEID
 DESCRIPTOR.message_types_by_name['BookingEmpty'] = _BOOKINGEMPTY
 DESCRIPTOR.message_types_by_name['BookingDate'] = _BOOKINGDATE
 DESCRIPTOR.message_types_by_name['BookingDateAndMovieID'] = _BOOKINGDATEANDMOVIEID
 DESCRIPTOR.message_types_by_name['UserID'] = _USERID
 DESCRIPTOR.message_types_by_name['Book'] = _BOOK
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
-
-MovieID = _reflection.GeneratedProtocolMessageType('MovieID', (_message.Message,), {
-  'DESCRIPTOR' : _MOVIEID,
-  '__module__' : 'booking_pb2'
-  # @@protoc_insertion_point(class_scope:MovieID)
-  })
-_sym_db.RegisterMessage(MovieID)
 
 BookingEmpty = _reflection.GeneratedProtocolMessageType('BookingEmpty', (_message.Message,), {
   'DESCRIPTOR' : _BOOKINGEMPTY,
@@ -283,8 +243,8 @@ _BOOKING = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=235,
-  serialized_end=411,
+  serialized_start=212,
+  serialized_end=388,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetListBookings',
